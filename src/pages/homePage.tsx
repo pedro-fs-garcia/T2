@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class HomePage extends Component{
     render(){
@@ -12,12 +13,12 @@ export default class HomePage extends Component{
                     </p>
     
                     <div className="d-flex gap-3 justify-content-center">
-                        <a href="/login" className="btn btn-primary btn-lg">
+                        <Link to="/login" className="btn btn-primary btn-lg">
                             Entrar
-                        </a>
-                        <a href="/login" className="btn btn-outline-secondary btn-lg">
+                        </Link>
+                        <Link to="/login" className="btn btn-outline-secondary btn-lg">
                             Criar Conta
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>
