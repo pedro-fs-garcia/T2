@@ -3,25 +3,24 @@ import { Component } from "react";
 export default class HomePage extends Component{
     render(){
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900">
-                <div className="text-center max-w-2xl">
-                    <h1 className="text-4xl font-bold text-blue-600 mb-4">Bem-vindo ao MovieRating</h1>
-                    <p className="text-lg text-gray-700 mb-6">
-                    Um sistema de gerenciamento de biblioteca moderno e eficiente. Acesse seu acervo,
-                    gerencie empréstimos e administre usuários de forma simples e intuitiva.
+            <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light">
+                <div className="text-center col-md-8">
+                    <h1 className="display-4 text-primary mb-4">Bem-vindo ao C4P PetShop</h1>
+                    <p className="lead text-muted mb-4">
+                        Um sistema moderno e eficiente para gerenciamento de petshop. Gerencie clientes,
+                        pets, produtos e serviços de forma simples e intuitiva.
                     </p>
     
-                    <div className="flex space-x-4">
-                    <a href="/login" className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition">
-                        Entrar
-                    </a>
-                    <a href="/login" className="bg-gray-200 text-gray-900 px-6 py-3 rounded-lg shadow-md hover:bg-gray-300 transition">
-                        Criar Conta
-                    </a>
+                    <div className="d-flex gap-3 justify-content-center">
+                        <a href="/login" className="btn btn-primary btn-lg">
+                            Entrar
+                        </a>
+                        <a href="/login" className="btn btn-outline-secondary btn-lg">
+                            Criar Conta
+                        </a>
                     </div>
                 </div>
             </div>
-    
         );
     }
 }

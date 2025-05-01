@@ -19,25 +19,25 @@ export default class Header extends Component {
           
           // const user = null;
           return (
-            <header className="bg-gray-900 text-white p-4">
-              <div className="container mx-auto flex justify-between items-center">
-                <h1 className="text-xl font-bold">MovieRating</h1>
+            <header className="bg-dark text-white py-3">
+              <div className="container d-flex justify-content-between align-items-center">
+                <h1 className="h4 mb-0">C4P PetShop</h1>
                 <nav>
-                  <ul className="flex space-x-4">
-                    <li>
-                      <a href="/" className="hover:underline">Home</a>
+                  <ul className="nav">
+                    <li className="nav-item">
+                      <a href="/" className="nav-link text-white">Home</a>
                     </li>
-                    <li>
-                      <a href="/dashboard" className="hover:underline">Dashboard</a>
+                    <li className="nav-item">
+                      <a href="/dashboard" className="nav-link text-white">Dashboard</a>
                     </li>
         
                     {user ? (
-                      <li>
-                        <button onClick={handleLogout} className="hover:underline">Logout</button>
+                      <li className="nav-item">
+                        <button onClick={handleLogout} className="nav-link text-white">Logout</button>
                       </li>
                     ) : (
-                      <li>
-                        <a href="/login" className="hover:underline">Login</a>
+                      <li className="nav-item">
+                        <a href="/login" className="nav-link text-white">Login</a>
                       </li>
                     )}
         
