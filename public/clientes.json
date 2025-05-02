@@ -1,0 +1,24 @@
+[
+	{
+		"id": 1,
+		"nome": "João da Silva",
+		"nomeSocial": "João",
+		"cpf": "12345678901",
+		"email": "joao@gmail.com",
+		"telefone": {
+			"ddd": "11",
+			"numero": "91234-5678" 
+		}
+	},
+	{
+		"id": 2,
+		"nome": "Maria Oliveira",
+		"nomeSocial": "Maria",
+		"cpf": "98765432100",
+		"email": "maria@gmail.com",
+		"telefone": {
+			"ddd": "12",
+			"numero": "99876-5432" 
+		}
+	}
+]
