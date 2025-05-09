@@ -1,10 +1,11 @@
 export default class Produto {
+    private id: number|null;
     private nome: string;
     private preco: number;
     private quantidadeEstoque: number;
     public consumo:number;
     
-    constructor (nome:string, preco:number, quantidadeEstoque:number){
+    constructor (id:number|null, nome:string, preco:number, quantidadeEstoque:number){
         if (!nome || nome.trim() === '') {
             throw new Error('O nome do produto não pode ser vazio');
         }
@@ -14,6 +15,7 @@ export default class Produto {
         if (quantidadeEstoque < 0) {
             throw new Error('A quantidade em estoque não pode ser negativa');
         }
+        this.id = id;
         this.nome = nome;
         this.preco = preco;
         this.quantidadeEstoque = quantidadeEstoque;
@@ -29,6 +31,10 @@ export default class Produto {
         output += `Este produto foi comprado ${this.consumo} vezes\n`;
         output += "--------------------------------\n";
         return output;
+    }
+
+    public get getId(){
+        return this.id;
     }
     
     public get getNome(){
@@ -57,6 +63,10 @@ export default class Produto {
             throw new Error('Não é possível adicionar quantidade negativa ao estoque');
         }
         this.quantidadeEstoque += quantidade;
+    }
+
+    public setId(id:number|null){
+        this.id = id;
     }
 
     public setNome(nome:string){

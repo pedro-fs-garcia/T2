@@ -3,21 +3,6 @@ import { Link } from "react-router-dom";
 
 export default class Header extends Component {
     render(){
-        const handleLogout = () => {
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem('user');
-            window.location.href = "/login";
-        };
-        
-        let user = null;
-      
-        try {
-            const storedUser = sessionStorage.getItem("user");
-            user = storedUser ? JSON.parse(storedUser) : null;
-        } catch (error) {
-            console.error("Erro ao carregar usuário do sessionStorage:", error);
-        }
-        
         return (
             <header className="bg-dark text-white py-3">
                 <div className="container d-flex justify-content-between align-items-center">
@@ -50,15 +35,6 @@ export default class Header extends Component {
                                     <li><Link to="/registro/venda" className="dropdown-item">Registro de Venda</Link></li>
                                 </ul>
                             </li>
-                            {user ? (
-                                <li className="nav-item">
-                                    <button onClick={handleLogout} className="nav-link text-white">Logout</button>
-                                </li>
-                            ) : (
-                                <li className="nav-item">
-                                    <Link to="/login" className="nav-link text-white">Login</Link>
-                                </li>
-                            )}
                         </ul>
                     </nav>
                 </div>

@@ -20,16 +20,6 @@ export default class Pet {
         this.tipo = tipo
     }
 
-    public descrever(){
-        let output = "";
-        output += "--------------------------------\n"
-        output += `Nome do pet: ${this.nome}\n`
-        output += `Tipo de pet: ${this.tipo}\n`
-        output += `Raça do pet: ${this.raca}\n`
-        output += `Gênero do pet: ${this.genero}\n`
-        output += "--------------------------------"
-    }
-
     public get getNome(){return this.nome}
     public get getRaca(){return this.raca}
     public get getGenero(){return this.genero}

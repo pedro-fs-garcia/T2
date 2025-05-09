@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Produto from '../models/produto';
-import Servico from '../models/servico';
+import Produto from '../../models/produto';
+import Servico from '../../models/servico';
 
 interface State {
     tipo: 'produto' | 'servico';

@@ -34,44 +34,6 @@ export default class Cliente extends User {
         this.itensConsumidos = itensConsumidos;
         this.valorConsumido = valorConsumido;
     }
-
-    public adicionaPet(pet:Pet){
-        this.pets.push(pet);
-    }
-
-    public adicionaProduto(produto:Produto, quantidade:number){
-        if (quantidade > produto.getQuantidadeEstoque) {
-            throw new Error('Quantidade solicitada maior que o estoque disponível');
-        }
-        this.produtosConsumidos.push(produto);
-        this.itensConsumidos += quantidade;
-        this.valorConsumido += produto.getPreco * quantidade;
-    }
-
-    public adicionaServico(servico:Servico){
-        this.servicosConsumidos.push(servico);
-        this.itensConsumidos += 1;
-        this.valorConsumido += servico.getPreco;
-    }
-
-    public listarPets(){
-        this.pets.forEach(pet => {
-            console.log(pet.descrever());
-        });
-    }
-
-    public listarPrincipaisAtributos(){
-        console.log("--------------------------------");
-        console.log(`Nome do cliente: ${this.getNome}`);
-        console.log(`CPF do cliente: ${this.getCpf}`);
-        console.log('Pets:');
-        this.pets.forEach(pet => {
-            console.log(`   nome do pet: ${pet.getNome}`)
-        });
-        console.log(`Quatidade de itens consumidos: ${this.getItensConsumidos}`);
-        console.log(`Valor consumido: ${this.valorConsumido}`);
-        console.log("--------------------------------");
-    }
     
     public get getProdutosConsumidos(): Array<Produto> {
         return this.produtosConsumidos

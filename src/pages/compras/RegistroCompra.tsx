@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Produto from '../models/produto';
-import Servico from '../models/servico';
+import Produto from '../../models/produto';
+import Servico from '../../models/servico';
 
 interface State {
     tipo: 'produto' | 'servico';
@@ -32,6 +32,7 @@ export default class RegistroCompra extends Component<Props, State> {
         try {
             if (this.state.tipo === 'produto') {
                 const produto = new Produto(
+                    null,
                     this.state.nome,
                     parseFloat(this.state.preco),
                     parseInt(this.state.quantidadeEstoque)
@@ -40,6 +41,7 @@ export default class RegistroCompra extends Component<Props, State> {
                 this.setState({ mensagem: 'Compra de produto registrada com sucesso!' });
             } else {
                 const servico = new Servico(
+                    null,
                     this.state.nome,
                     parseFloat(this.state.preco)
                 );
