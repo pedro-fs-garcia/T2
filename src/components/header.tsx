@@ -41,6 +41,15 @@ export default class Header extends Component {
                             <li className="nav-item">
                                 <Link to="/servicos" className="nav-link text-white">Serviços</Link>
                             </li>
+                            <li className="nav-item dropdown">
+                                <a className="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Registros
+                                </a>
+                                <ul className="dropdown-menu">
+                                    <li><Link to="/registro/compra" className="dropdown-item">Registro de Compra</Link></li>
+                                    <li><Link to="/registro/venda" className="dropdown-item">Registro de Venda</Link></li>
+                                </ul>
+                            </li>
                             {user ? (
                                 <li className="nav-item">
                                     <button onClick={handleLogout} className="nav-link text-white">Logout</button>

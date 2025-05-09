@@ -9,6 +9,8 @@ import ProdutoList from "../pages/produtos/ProdutoList";
 import ProdutoForm from "../pages/produtos/ProdutoForm";
 import ServicoList from "../pages/servicos/ServicoList";
 import ServicoForm from "../pages/servicos/ServicoForm";
+import RegistroCompra from "../pages/RegistroCompra";
+import RegistroVenda from "../pages/RegistroVenda";
 
 export default class AppRoutes extends Component {
     render() {
@@ -35,6 +37,10 @@ export default class AppRoutes extends Component {
                 <Route path="/servicos" element={<ServicoList />} />
                 <Route path="/servicos/novo" element={<ServicoForm />} />
                 <Route path="/servicos/:id/editar" element={<ServicoForm />} />
+
+                {/* Rotas de Registro */}
+                <Route path="/registro/compra" element={<RegistroCompra />} />
+                <Route path="/registro/venda" element={<RegistroVenda />} />
             </Routes>
         );
     }
