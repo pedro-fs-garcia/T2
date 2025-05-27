@@ -138,7 +138,7 @@ export default class RegistroCompra extends Component<Props, State> {
                                     )}
 
                                     <div className="d-flex justify-content-between">
-                                        <Link to="/" className="btn btn-secondary">Voltar</Link>
+                                        <Link to="/compras" className="btn btn-secondary">Voltar</Link>
                                         <button type="submit" className="btn btn-primary">Registrar Compra</button>
                                     </div>
                                 </form>

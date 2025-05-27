@@ -6,9 +6,9 @@ export default class VendasList extends Component {
         return (
             <div className="container py-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h2 className="mb-0">Serviços</h2>
-                    <Link to="/servicos/novo" className="btn btn-primary">
-                        <i className="bi bi-plus-lg me-2"></i>Novo Serviço
+                    <h2 className="mb-0">Vendas de produtos e serviços</h2>
+                    <Link to="/vendas/novo" className="btn btn-primary">
+                        <i className="bi bi-plus-lg me-2"></i>Nova venda
                     </Link>
                 </div>
 
@@ -40,10 +40,10 @@ export default class VendasList extends Component {
                                         <td>R$ 80,00</td>
                                         <td>
                                             <div className="btn-group">
-                                                <Link to="/servicos/1" className="btn btn-sm btn-outline-primary">
+                                                <Link to="/vendas/1" className="btn btn-sm btn-outline-primary">
                                                     <i className="bi bi-eye"></i>
                                                 </Link>
-                                                <Link to="/servicos/1/editar" className="btn btn-sm btn-outline-secondary">
+                                                <Link to="/vendas/1/editar" className="btn btn-sm btn-outline-secondary">
                                                     <i className="bi bi-pencil"></i>
                                                 </Link>
                                                 <button className="btn btn-sm btn-outline-danger">

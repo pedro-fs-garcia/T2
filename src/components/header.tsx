@@ -31,8 +31,8 @@ export default class Header extends Component {
                                     Registros
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li><Link to="/registro/compra" className="dropdown-item">Registro de Compra</Link></li>
-                                    <li><Link to="/registro/venda" className="dropdown-item">Registro de Venda</Link></li>
+                                    <li><Link to="/compras" className="dropdown-item">Compras</Link></li>
+                                    <li><Link to="/vendas" className="dropdown-item">Vendas</Link></li>
                                 </ul>
                             </li>
                         </ul>

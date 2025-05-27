@@ -14,6 +14,8 @@ import RegistroVenda from "../pages/vendas/RegistroVenda";
 import ComprasList from "../pages/compras/ComprasList";
 import VendasList from "../pages/vendas/VendasList";
 import ClienteDetalhes from "../pages/clientes/ClienteDetalhes";
+import DetalheCompra from "../pages/compras/DetalheCompra";
+import DetalheVenda from "../pages/vendas/DetalheVenda";
 
 export default class AppRoutes extends Component {
     render() {
@@ -48,14 +50,14 @@ export default class AppRoutes extends Component {
                 {/* Rotas de compras */}
                 <Route path="/compras" element={<ComprasList />} />
                 <Route path="/compras/novo" element={<RegistroCompra />} />
-                <Route path="/compras/:id" element={<RegistroCompra />} />
-                <Route path="/compras/:id/editar" element={<RegistroCompra />} />
+                <Route path="/compras/:id" element={<DetalheCompra editar='false' />} />
+                <Route path="/compras/:id/editar" element={<DetalheCompra editar='true' />} />
 
                 {/* rotas de vendas */}
                 <Route path="/vendas" element={<VendasList />} />
                 <Route path="/vendas/novo" element={<RegistroVenda />} />
-                <Route path="/vendas/:id" element={<RegistroVenda />} />
-                <Route path="/vendas/:id/editar" element={<RegistroVenda />} />
+                <Route path="/vendas/:id" element={<DetalheVenda editar='false' />} />
+                <Route path="/vendas/:id/editar" element={<DetalheVenda editar='true' />} />
             </Routes>
         );
     }
