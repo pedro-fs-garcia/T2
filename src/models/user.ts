@@ -5,7 +5,6 @@ import Telefone from "./telefone";
 export default class User {
     constructor(
         private nome: string,
-        private nomeSocial: string,
         private cpf: CPF,
         private rg: RG | null = null,
         private dataCadastro: Date = new Date(),
@@ -15,10 +14,6 @@ export default class User {
 
     public get getNome(): string {
         return this.nome
-    }
-
-    public get getNomeSocial(): string {
-        return this.nomeSocial
     }
 
     public get getCpf(): CPF {
@@ -45,9 +40,6 @@ export default class User {
         this.nome = nome
     }
     
-    public setNomeSocial(nomeSocial: string) {
-        this.nomeSocial = nomeSocial
-    }
     
     public setCpf(cpf: CPF) {
         this.cpf = cpf

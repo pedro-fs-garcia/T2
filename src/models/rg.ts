@@ -1,7 +1,7 @@
 import DocumentoDeIdentidade from "./documento";
 
 export default class RG extends DocumentoDeIdentidade {
-    constructor(valor: string, dataEmissao: Date) {
+    constructor(valor: string, dataEmissao?: Date) {
         super(valor, dataEmissao);
     }
 

@@ -1,7 +1,7 @@
 export default class DocumentoDeIdentidade {
     constructor (
         private valor: string,
-        private dataEmissao: Date
+        private dataEmissao?: Date
     ) {}
 
     public descrever(nomeDocumento:string) {
@@ -12,7 +12,7 @@ export default class DocumentoDeIdentidade {
         return this.valor;
     }
 
-    public get getDataEmissao(): Date {
+    public get getDataEmissao(): Date|undefined {
         return this.dataEmissao;
     }
 

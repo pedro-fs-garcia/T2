@@ -1,156 +1,220 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Produto from '../../models/produto';
-import Servico from '../../models/servico';
 
-interface Props {
-    editar: string; // "true" ou "false" (como string do Route)
+interface Fornecedor {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+}
+
+interface Produto {
+    id: number;
+    nome: string;
+    preco: number;
+}
+
+interface ItemCompra {
+    id: number;
+    produto: Produto;
+    quantidade: number;
+    subtotal: number;
+}
+
+interface Compra {
+    id: number;
+    data: string;
+    fornecedor: Fornecedor;
+    itens: ItemCompra[];
+    total: number;
+    status: string;
+    formaPagamento: string;
 }
 
 interface State {
-    tipo: 'produto' | 'servico';
-    nome: string;
-    preco: number;
-    quantidade: number;
-    quantidadeEstoque: number;
+    compra: Compra | null;
+    loading: boolean;
     mensagem: string;
-    editar: boolean;
 }
 
-export default class DetalheCompra extends Component<Props, State> {
-    constructor(props: Props) {
+export default class DetalheCompra extends Component<{ id: string }, State> {
+    constructor(props: { id: string }) {
         super(props);
-
         this.state = {
-            tipo: 'servico',
-            nome: 'Banho e Tosa',
-            preco: 80.0,
-            quantidade: 3,
-            quantidadeEstoque: 5,
-            mensagem: '',
-            editar: props.editar === 'true'
+            compra: {
+                id: 1,
+                data: "2024-03-15",
+                fornecedor: {
+                    id: 1,
+                    nome: "PetShop Distribuidora",
+                    email: "contato@petshopdist.com",
+                    telefone: "(11) 3333-4444"
+                },
+                itens: [
+                    {
+                        id: 1,
+                        produto: {
+                            id: 1,
+                            nome: "Ração Premium",
+                            preco: 45.90
+                        },
+                        quantidade: 10,
+                        subtotal: 459.00
+                    },
+                    {
+                        id: 2,
+                        produto: {
+                            id: 2,
+                            nome: "Shampoo para Cães",
+                            preco: 29.90
+                        },
+                        quantidade: 5,
+                        subtotal: 149.50
+                    }
+                ],
+                total: 608.50,
+                status: "concluida",
+                formaPagamento: "boleto"
+            },
+            loading: false,
+            mensagem: ''
         };
     }
 
-    handleChange = (field: keyof State, value: any) => {
-        this.setState({ [field]: value } as Pick<State, keyof State>);
+    formatarData = (data: string) => {
+        return new Date(data).toLocaleDateString('pt-BR');
     };
 
-    handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const { tipo, nome, preco, quantidade, quantidadeEstoque } = this.state;
-            if (tipo === 'produto') {
-                const produto = new Produto(null, nome, preco, quantidadeEstoque);
-                produto.registrarCompra(quantidade);
-                this.setState({ mensagem: 'Compra de produto registrada com sucesso!' });
-            } else {
-                const servico = new Servico(null, nome, preco);
-                servico.registrarCompra(quantidade);
-                this.setState({ mensagem: 'Compra de serviço registrada com sucesso!' });
-            }
-        } catch (error) {
-            this.setState({
-                mensagem: `Erro: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
-            });
-        }
+    getStatusLabel = (status: string) => {
+        const statusMap: { [key: string]: string } = {
+            concluida: 'Concluída',
+            pendente: 'Pendente',
+            cancelada: 'Cancelada'
+        };
+        return statusMap[status] || status;
     };
 
-    renderField = (
-        label: string,
-        value: string | number,
-        field: keyof State,
-        type: 'text' | 'number' = 'text'
-    ) => {
-        return (
-            <div className="mb-3 row">
-                <label className="col-sm-4 col-form-label fw-bold">{label}</label>
-                <div className="col-sm-8">
-                    {this.state.editar ? (
-                        <input
-                            type={type}
-                            className="form-control"
-                            value={value}
-                            onChange={(e) => this.handleChange(field, type === 'number' ? parseFloat(e.target.value) : e.target.value)}
-                        />
-                    ) : (
-                        <p className="form-control-plaintext">
-                            {field === 'preco' || field === 'quantidadeEstoque' || field === 'quantidade'
-                                ? `R$ ${(value as number).toFixed(2)}`
-                                : value}
-                        </p>
-                    )}
-                </div>
-            </div>
-        );
+    getFormaPagamentoLabel = (forma: string) => {
+        const formasMap: { [key: string]: string } = {
+            cartao: 'Cartão',
+            dinheiro: 'Dinheiro',
+            pix: 'PIX',
+            boleto: 'Boleto'
+        };
+        return formasMap[forma] || forma;
     };
 
     render() {
-        const { tipo, nome, preco, quantidade, quantidadeEstoque, mensagem, editar } = this.state;
+        const { compra, loading, mensagem } = this.state;
+
+        if (loading) {
+            return (
+                <div className="container py-4">
+                    <div className="text-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (mensagem) {
+            return (
+                <div className="container py-4">
+                    <div className="alert alert-danger" role="alert">
+                        {mensagem}
+                    </div>
+                    <Link to="/compras" className="btn btn-outline-secondary">
+                        <i className="bi bi-arrow-left me-2"></i>
+                        Voltar para Compras
+                    </Link>
+                </div>
+            );
+        }
+
+        if (!compra) {
+            return (
+                <div className="container py-4">
+                    <div className="alert alert-warning" role="alert">
+                        Compra não encontrada
+                    </div>
+                    <Link to="/compras" className="btn btn-outline-secondary">
+                        <i className="bi bi-arrow-left me-2"></i>
+                        Voltar para Compras
+                    </Link>
+                </div>
+            );
+        }
 
         return (
-            <div className="container py-5">
-                <div className="row justify-content-center">
-                    <div className="col-md-8">
-                        <div className="card shadow-sm">
-                            <div className="card-header bg-dark text-white">
-                                <h4 className="mb-0">
-                                    {editar ? 'Editar Compra' : 'Detalhes da Compra'}
-                                </h4>
+            <div className="container py-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Detalhes da Compra #{compra.id}</h2>
+                    <div>
+                        <Link to="/compras" className="btn btn-outline-secondary me-2">
+                            <i className="bi bi-arrow-left me-2"></i>
+                            Voltar
+                        </Link>
+                        <Link to={`/compras/${compra.id}/editar`} className="btn btn-primary">
+                            <i className="bi bi-pencil me-2"></i>
+                            Editar
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="card shadow-sm mb-4">
+                    <div className="card-header bg-success text-white">
+                        <h5 className="mb-0">Informações Gerais</h5>
+                    </div>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <p><strong>Data:</strong> {this.formatarData(compra.data)}</p>
+                                <p><strong>Status:</strong> {this.getStatusLabel(compra.status)}</p>
+                                <p><strong>Forma de Pagamento:</strong> {this.getFormaPagamentoLabel(compra.formaPagamento)}</p>
                             </div>
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="card-body">
-                                    {/* Tipo */}
-                                    <div className="mb-3 row">
-                                        <label className="col-sm-4 col-form-label fw-bold">Tipo</label>
-                                        <div className="col-sm-8">
-                                            {editar ? (
-                                                <select
-                                                    className="form-select"
-                                                    value={tipo}
-                                                    onChange={(e) => this.handleChange('tipo', e.target.value as 'produto' | 'servico')}
-                                                >
-                                                    <option value="produto">Produto</option>
-                                                    <option value="servico">Serviço</option>
-                                                </select>
-                                            ) : (
-                                                <p className="form-control-plaintext">{tipo === 'produto' ? 'Produto' : 'Serviço'}</p>
-                                            )}
-                                        </div>
-                                    </div>
+                            <div className="col-md-6">
+                                <p><strong>Fornecedor:</strong> {compra.fornecedor.nome}</p>
+                                <p><strong>Email:</strong> {compra.fornecedor.email}</p>
+                                <p><strong>Telefone:</strong> {compra.fornecedor.telefone}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                    {this.renderField('Nome', nome, 'nome')}
-                                    {this.renderField('Preço Unitário', preco, 'preco', 'number')}
-                                    {this.renderField('Quantidade', quantidade, 'quantidade', 'number')}
-
-                                    {tipo === 'produto' &&
-                                        this.renderField('Estoque Após Compra', quantidadeEstoque, 'quantidadeEstoque', 'number')}
-
-                                    <div className="mb-3 row">
-                                        <label className="col-sm-4 col-form-label fw-bold">Total</label>
-                                        <div className="col-sm-8">
-                                            <p className="form-control-plaintext">
-                                                R$ {(preco * quantidade).toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {mensagem && (
-                                        <div className={`alert ${mensagem.includes('Erro') ? 'alert-danger' : 'alert-success'}`} role="alert">
-                                            {mensagem}
-                                        </div>
-                                    )}
-
-                                    <div className="mt-4 d-flex justify-content-between">
-                                        <Link to="/compras" className="btn btn-outline-secondary">Voltar</Link>
-                                        {editar && (
-                                            <button type="submit" className="btn btn-primary">
-                                                Salvar Alterações
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </form>
+                <div className="card shadow-sm">
+                    <div className="card-header bg-success text-white">
+                        <h5 className="mb-0">Itens da Compra</h5>
+                    </div>
+                    <div className="card-body">
+                        <div className="table-responsive">
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço Unitário</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {compra.itens.map((item) => (
+                                        <tr key={item.id}>
+                                            <td>{item.produto.nome}</td>
+                                            <td>{item.quantidade}</td>
+                                            <td>R$ {item.produto.preco.toFixed(2)}</td>
+                                            <td>R$ {item.subtotal.toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={3} className="text-end"><strong>Total:</strong></td>
+                                        <td><strong>R$ {compra.total.toFixed(2)}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>

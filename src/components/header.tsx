@@ -1,41 +1,60 @@
-import { Component} from "react";
 import { Link } from "react-router-dom";
+import { Component } from 'react';
 
 export default class Header extends Component {
-    render(){
+    render() {
         return (
             <header className="bg-dark text-white py-3">
-                <div className="container d-flex justify-content-between align-items-center">
-                    <Link to="/" className="text-white text-decoration-none">
-                        <h1 className="h4 mb-0">C4P PetShop</h1>
-                    </Link>
-                    <nav>
-                        <ul className="nav">
-                            <li className="nav-item">
-                                <Link to="/" className="nav-link text-white">Home</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/clientes" className="nav-link text-white">Clientes</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/pets" className="nav-link text-white">Pets</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/produtos" className="nav-link text-white">Produtos</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/servicos" className="nav-link text-white">Serviços</Link>
-                            </li>
-                            <li className="nav-item dropdown">
-                                <a className="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Registros
-                                </a>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/compras" className="dropdown-item">Compras</Link></li>
-                                    <li><Link to="/vendas" className="dropdown-item">Vendas</Link></li>
-                                </ul>
-                            </li>
-                        </ul>
+                <div className="container">
+                    <nav className="navbar navbar-expand-lg navbar-dark">
+                        <Link to="/" className="navbar-brand">
+                            C4P PetShop
+                        </Link>
+                        <button
+                            className="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarNavDropdown"
+                            aria-controls="navbarNavDropdown"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
+                        >
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                            <ul className="navbar-nav ms-auto">
+                                <li className="nav-item">
+                                    <Link to="/" className="nav-link">Home</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/clientes" className="nav-link">Clientes</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/pets" className="nav-link">Pets</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/produtos" className="nav-link">Produtos</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/servicos" className="nav-link">Serviços</Link>
+                                </li>
+                                <li className="nav-item dropdown">
+                                    <a
+                                        className="nav-link dropdown-toggle"
+                                        href="#"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Registros
+                                    </a>
+                                    <ul className="dropdown-menu">
+                                        <li><Link to="/compras" className="dropdown-item">Compras</Link></li>
+                                        <li><Link to="/vendas" className="dropdown-item">Vendas</Link></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </nav>
                 </div>
             </header>

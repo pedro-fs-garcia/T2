@@ -1,202 +1,203 @@
-import { Component } from "react";
-import Cliente from "../../models/cliente";
-import RoutesUtils from "../../routes/WithRouter";
-import ClienteService from "../../services/ClienteService";
+import { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { withRouter } from '../WithRouter';
 
-type State = {
-    cliente: Cliente,
-    loading: boolean,
-    erro: string | null,
-    aba:string
-};
+interface ClienteData {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    endereco: string;
+    cpf: string;
+    dataCadastro: string;
+    observacoes: string;
+}
 
-type Props = {
-  router: {
-    params: {
-      id: number;
+interface Props {
+    editar: string;
+    router: {
+        params: {
+            id: string;
+        };
     };
-  };
-};
+}
 
+interface State {
+    cliente: ClienteData | null;
+    loading: boolean;
+    mensagem: string;
+    editando: boolean;
+}
 
 class ClienteDetalhes extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        const cs = new ClienteService();
         this.state = {
-            cliente: cs.buscarClientePorId(props.router.params.id),
-            loading: false,
-            erro: null,
-            aba: "pets"
+            cliente: null,
+            loading: true,
+            mensagem: '',
+            editando: false
         };
     }
-    
-    formatCurrency(value:number) {
-        return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+
+    componentDidMount() {
+        const { id } = this.props.router.params;
+        fetch('/clientes.json')
+            .then((res) => {
+                if (!res.ok) throw new Error('Erro ao buscar os dados do cliente');
+                return res.json();
+            })
+            .then((data: ClienteData[]) => {
+                const clienteEncontrado = data.find(c => c.id === Number(id));
+                if (clienteEncontrado) {
+                    this.setState({ cliente: clienteEncontrado });
+                } else {
+                    this.setState({ mensagem: 'Cliente não encontrado' });
+                }
+            })
+            .catch((err) => this.setState({ mensagem: `Erro: ${err.message}` }))
+            .finally(() => this.setState({ loading: false }));
     }
 
+    handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        this.setState(prevState => ({
+            ...prevState,
+            cliente: prevState.cliente ? {
+                ...prevState.cliente,
+                [name]: value
+            } : null
+        }));
+    };
+
+    handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Aqui você implementaria a lógica para salvar as alterações
+        this.setState({ 
+            mensagem: 'Alterações salvas com sucesso!',
+            editando: false
+        });
+    };
+
+    toggleEditando = () => {
+        this.setState(prevState => ({ editando: !prevState.editando }));
+    };
+
+    renderField = (
+        label: string,
+        name: keyof ClienteData,
+        type: 'text' | 'email' | 'tel' | 'textarea' = 'text'
+    ) => {
+        const { cliente, editando } = this.state;
+        return (
+            <div className="mb-3">
+                <label className="form-label">{label}</label>
+                {editando ? (
+                    type === 'textarea' ? (
+                        <textarea
+                            className="form-control"
+                            name={name}
+                            value={cliente?.[name] || ''}
+                            onChange={this.handleChange}
+                            rows={3}
+                        />
+                    ) : (
+                        <input
+                            type={type}
+                            className="form-control"
+                            name={name}
+                            value={cliente?.[name] || ''}
+                            onChange={this.handleChange}
+                        />
+                    )
+                ) : (
+                    <p className="form-control-plaintext">{cliente?.[name] || ''}</p>
+                )}
+            </div>
+        );
+    };
+
     render() {
-        const { cliente, loading, erro, aba } = this.state;
+        const { loading, mensagem, cliente, editando } = this.state;
 
         if (loading) {
-            return <div className="text-center mt-5">Carregando clientes...</div>;
+            return (
+                <div className="container py-4">
+                    <div className="text-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+            );
         }
 
-        if (erro) {
-            return <div className="text-danger text-center mt-5">Erro: {erro}</div>;
+        if (mensagem) {
+            return (
+                <div className="container py-4">
+                    <div className="alert alert-success" role="alert">
+                        {mensagem}
+                    </div>
+                    <Link to="/clientes" className="btn btn-outline-secondary">
+                        <i className="bi bi-arrow-left me-2"></i>
+                        Voltar para Clientes
+                    </Link>
+                </div>
+            );
         }
 
         if (!cliente) {
             return (
-                <div className="container py-5 d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
-                    <p>Carregando informações do cliente...</p>
-                </div>
-            )
-        }
-        return (
-            <div className="container py-5">
-                <h1 className="mb-4">Informações do Cliente</h1>
-
-                <div className="row g-4">
-                    <div className="col-lg-4">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5>{cliente.getNome}</h5>
-                                {cliente.getNome !== cliente.getNomeSocial && <small>Nome social: {cliente.getNomeSocial}</small>}
-                            </div>
-                            <div className="card-body">
-                                <p><strong>CPF:</strong> {cliente.getCpf.getValor}</p>
-                                <p><strong>RG:</strong> {cliente.getRg?.getValor}</p>
-                                <p><strong>Cadastrado em:</strong> {cliente.getDataCadastro.toDateString()}</p>
-                                <hr />
-                                <h6>Contatos:</h6>
-                                {cliente.getTelefones.map((tel, idx) => (
-                                    <p key={idx}>({tel.getDdd}) {tel.getNumero}</p>
-                                ))}
-                                <p>{cliente.getEmail}</p>
-                                <hr />
-                                <h6>Consumo:</h6>
-                                <div className="row">
-                                    <div className="col">
-                                        <p className="mb-1"><small>Itens consumidos</small></p>
-                                        <h5>{cliente.getItensConsumidos}</h5>
-                                    </div>
-                                    <div className="col">
-                                        <p className="mb-1"><small>Valor total</small></p>
-                                        <h5>{this.formatCurrency(cliente.getValorConsumido)}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div className="container py-4">
+                    <div className="alert alert-warning" role="alert">
+                        Cliente não encontrado
                     </div>
+                    <Link to="/clientes" className="btn btn-outline-secondary">
+                        <i className="bi bi-arrow-left me-2"></i>
+                        Voltar para Clientes
+                    </Link>
+                </div>
+            );
+        }
 
-                    <div className="col-lg-8">
-                        <div className="card">
-                            <div className="card-header">
-                                <ul className="nav nav-tabs card-header-tabs">
-                                    <li className="nav-item">
-                                        <button
-                                            className={`nav-link ${aba === "pets" ? "active" : ""}`}
-                                            onClick={() => this.setState({ aba: "pets" })}
-                                        >
-                                            Pets
-                                        </button>
-                                    </li>
-                                    <li className="nav-item">
-                                        <button
-                                            className={`nav-link ${aba === "produtos" ? "active" : ""}`}
-                                            onClick={() => this.setState({ aba: "produtos" })}
-                                        >
-                                            Produtos
-                                        </button>
-                                    </li>
-                                    <li className="nav-item">
-                                        <button
-                                            className={`nav-link ${aba === "servicos" ? "active" : ""}`}
-                                            onClick={() => this.setState({ aba: "servicos" })}
-                                        >
-                                            Serviços
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="card-body">
-                                {aba === "pets" && (
-                                    <>
-                                        {cliente.getPets.length > 0 ? (
-                                            <div className="row g-3">
-                                                {cliente.getPets.map((pet, idx) => (
-                                                    <div className="col-md-6" key={idx}>
-                                                        <div className="card">
-                                                            <div className="card-body">
-                                                                <h5 className="card-title">{pet.getNome}</h5>
-                                                                <p className="card-text">{pet.getTipo} - {pet.getRaca}</p>
-                                                                <p className="card-text"><small>Gênero: {pet.getGenero}</small></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p>Nenhum pet cadastrado.</p>
-                                        )}
-                                    </>
-                                )}
+        return (
+            <div className="container py-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Detalhes do Cliente</h2>
+                    <div>
+                        <Link to="/clientes" className="btn btn-outline-secondary me-2">
+                            <i className="bi bi-arrow-left me-2"></i>
+                            Voltar
+                        </Link>
+                        <button
+                            className="btn btn-primary"
+                            onClick={this.toggleEditando}
+                        >
+                            <i className={`bi bi-${editando ? 'check' : 'pencil'} me-2`}></i>
+                            {editando ? 'Salvar' : 'Editar'}
+                        </button>
+                    </div>
+                </div>
 
-                                {aba === "produtos" && (
-                                    <>
-                                        {cliente.getProdutosConsumidos.length > 0 ? (
-                                            <>
-                                                {cliente.getProdutosConsumidos.map((produto, idx) => (
-                                                    <div key={idx} className="d-flex justify-content-between border-bottom pb-2 mb-2">
-                                                        <div>
-                                                            <p className="mb-0"><strong>{produto.getNome}</strong></p>
-                                                            <small>ID: {produto.getId}</small>
-                                                        </div>
-                                                        <span className="badge bg-secondary">{this.formatCurrency(produto.getPreco)}</span>
-                                                    </div>
-                                                ))}
-                                                <div className="d-flex justify-content-between mt-3 fw-bold">
-                                                    <p>Total</p>
-                                                    <p>{this.formatCurrency(cliente.getProdutosConsumidos.reduce((acc, p) => acc + p.getPreco, 0))}</p>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <p>Nenhum produto consumido.</p>
-                                        )}
-                                    </>
-                                )}
-
-                                {aba === "servicos" && (
-                                    <>
-                                        {cliente.getServicosConsumidos.length > 0 ? (
-                                            <>
-                                                {cliente.getServicosConsumidos.map((servico, idx) => (
-                                                    <div key={idx} className="d-flex justify-content-between border-bottom pb-2 mb-2">
-                                                        <div>
-                                                            <p className="mb-0"><strong>{servico.getNome}</strong></p>
-                                                            <small>ID: {servico.getId}</small>
-                                                        </div>
-                                                        <span className="badge bg-secondary">{this.formatCurrency(servico.getPreco)}</span>
-                                                    </div>
-                                                ))}
-                                                <div className="d-flex justify-content-between mt-3 fw-bold">
-                                                    <p>Total</p>
-                                                    <p>{this.formatCurrency(cliente.getServicosConsumidos.reduce((acc, s) => acc + s.getPreco, 0))}</p>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <p>Nenhum serviço consumido.</p>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
+                <div className="card shadow-sm">
+                    <div className="card-header bg-success text-white">
+                        <h5 className="mb-0">Informações do Cliente</h5>
+                    </div>
+                    <div className="card-body">
+                        <form onSubmit={this.handleSubmit}>
+                            {this.renderField('Nome', 'nome')}
+                            {this.renderField('E-mail', 'email', 'email')}
+                            {this.renderField('Telefone', 'telefone', 'tel')}
+                            {this.renderField('CPF', 'cpf')}
+                            {this.renderField('Endereço', 'endereco')}
+                            {this.renderField('Data de Cadastro', 'dataCadastro')}
+                            {this.renderField('Observações', 'observacoes', 'textarea')}
+                        </form>
                     </div>
                 </div>
             </div>
         );
     }
-} 
-const routesUtils = new RoutesUtils();
-export default routesUtils.withRouter(ClienteDetalhes);
+}
+
+export default withRouter(ClienteDetalhes); 

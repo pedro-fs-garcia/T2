@@ -30,8 +30,6 @@ const mockCliente = new Cliente(
     ],
 );
 
-export default class ClienteService {
-    buscarClientePorId(id:number) {
-        return mockCliente;
-    }
+export function getCliente(idCliente:number) {
+    return mockCliente;
 }

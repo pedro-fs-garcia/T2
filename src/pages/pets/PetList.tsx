@@ -1,57 +1,160 @@
-import { Component } from "react";
-import { Link } from "react-router-dom";
+import { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-export default class PetList extends Component {
+interface PetData {
+    id: number;
+    nome: string;
+    especie: string;
+    raca: string;
+    idade: number;
+    peso: number;
+    clienteId: number;
+    clienteNome: string;
+    observacoes: string;
+}
+
+interface State {
+    pets: PetData[];
+    loading: boolean;
+    mensagem: string;
+    busca: string;
+}
+
+export default class PetList extends Component<object, State> {
+    constructor(props: object) {
+        super(props);
+        this.state = {
+            pets: [],
+            loading: true,
+            mensagem: '',
+            busca: ''
+        };
+    }
+
+    componentDidMount() {
+        this.carregarPets();
+    }
+
+    carregarPets = async () => {
+        try {
+            const response = await fetch('/pets.json');
+            if (!response.ok) throw new Error('Erro ao buscar os dados dos pets');
+            const data = await response.json();
+            this.setState({ pets: data });
+        } catch (err) {
+            this.setState({ mensagem: `Erro: ${err instanceof Error ? err.message : 'Erro desconhecido'}` });
+        } finally {
+            this.setState({ loading: false });
+        }
+    };
+
+    handleBuscaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ busca: e.target.value });
+    };
+
     render() {
-        return (
-            <div className="container py-4">
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h2 className="mb-0">Pets</h2>
-                    <Link to="/pets/novo" className="btn btn-primary">
-                        <i className="bi bi-plus-lg me-2"></i>Novo Pet
-                    </Link>
-                </div>
+        const { pets, loading, mensagem, busca } = this.state;
 
-                <div className="card">
-                    <div className="card-body">
-                        <div className="table-responsive">
-                            <table className="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Espécie</th>
-                                        <th>Raça</th>
-                                        <th>Dono</th>
-                                        <th>Idade</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Rex</td>
-                                        <td>Cachorro</td>
-                                        <td>Labrador</td>
-                                        <td>João Silva</td>
-                                        <td>3 anos</td>
-                                        <td>
-                                            <div className="btn-group">
-                                                <Link to="/pets/1" className="btn btn-sm btn-outline-primary">
-                                                    <i className="bi bi-eye"></i>
-                                                </Link>
-                                                <Link to="/pets/1/editar" className="btn btn-sm btn-outline-secondary">
-                                                    <i className="bi bi-pencil"></i>
-                                                </Link>
-                                                <button className="btn btn-sm btn-outline-danger">
-                                                    <i className="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+        const petsFiltrados = pets.filter(pet => 
+            pet.nome.toLowerCase().includes(busca.toLowerCase()) ||
+            pet.especie.toLowerCase().includes(busca.toLowerCase()) ||
+            pet.raca.toLowerCase().includes(busca.toLowerCase()) ||
+            pet.clienteNome.toLowerCase().includes(busca.toLowerCase())
+        );
+
+        if (loading) {
+            return (
+                <div className="container py-4">
+                    <div className="text-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Carregando...</span>
                         </div>
                     </div>
                 </div>
+            );
+        }
+
+        return (
+            <div className="container py-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Pets</h2>
+                    <Link to="/pets/novo" className="btn btn-success">
+                        <i className="bi bi-plus-circle me-2"></i>
+                        Novo Pet
+                    </Link>
+                </div>
+
+                {mensagem && (
+                    <div className="alert alert-warning" role="alert">
+                        {mensagem}
+                    </div>
+                )}
+
+                <div className="card shadow-sm mb-4">
+                    <div className="card-body">
+                        <div className="input-group">
+                            <span className="input-group-text">
+                                <i className="bi bi-search"></i>
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Buscar por nome, espécie, raça ou dono..."
+                                value={busca}
+                                onChange={this.handleBuscaChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {petsFiltrados.map((pet) => (
+                        <div key={pet.id} className="col">
+                            <div className="card h-100 shadow-sm">
+                                <div className="card-header bg-success text-white">
+                                    <h5 className="card-title mb-0">{pet.nome}</h5>
+                                </div>
+                                <div className="card-body">
+                                    <p className="card-text">
+                                        <strong>Espécie:</strong> {pet.especie}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Raça:</strong> {pet.raca}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Idade:</strong> {pet.idade} anos
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Peso:</strong> {pet.peso} kg
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Dono:</strong> {pet.clienteNome}
+                                    </p>
+                                    {pet.observacoes && (
+                                        <p className="card-text">
+                                            <strong>Observações:</strong> {pet.observacoes}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="card-footer bg-transparent">
+                                    <Link
+                                        to={`/pets/${pet.id}`}
+                                        className="btn btn-outline-primary w-100"
+                                    >
+                                        <i className="bi bi-eye me-2"></i>
+                                        Ver Detalhes
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {petsFiltrados.length === 0 && (
+                    <div className="alert alert-info" role="alert">
+                        Nenhum pet encontrado com os critérios de busca.
+                    </div>
+                )}
             </div>
         );
     }

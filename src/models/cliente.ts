@@ -15,7 +15,6 @@ export default class Cliente extends User {
 
     constructor(
         nome: string,
-        nomeSocial: string,
         cpf: CPF,
         rg: RG | null = null,
         dataCadastro: Date = new Date(),
@@ -27,7 +26,7 @@ export default class Cliente extends User {
         itensConsumidos: number = 0,
         valorConsumido: number = 0
     ) {
-        super(nome, nomeSocial, cpf, rg, dataCadastro, telefones, email);
+        super(nome, cpf, rg, dataCadastro, telefones, email);
         this.produtosConsumidos = produtosConsumidos;
         this.servicosConsumidos = servicosConsumidos;
         this.pets = pets;
