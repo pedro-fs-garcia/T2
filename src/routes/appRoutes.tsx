@@ -18,9 +18,7 @@ import DetalhesPet from "../pages/pets/DetalhePet";
 import ProdutoDetalhes from "../pages/produtos/ProdutoDetalhes";
 import RegistroServico from "../pages/servicos/RegistroServico";
 import ServicoDetalhes from "../pages/servicos/ServicoDetalhes";
-import FornecedoresList from "../pages/fornecedores/FornecedoresList";
-import RegistroFornecedor from "../pages/fornecedores/RegistroFornecedor";
-import FornecedorDetalhes from "../pages/fornecedores/FornecedorDetalhes";
+import Statistics from "../components/Statistics";
 
 export default function AppRoutes() {
     return (
@@ -30,14 +28,14 @@ export default function AppRoutes() {
             {/* Rotas de Clientes */}
             <Route path="/clientes" element={<ClienteList />} />
             <Route path="/clientes/novo" element={<ClienteForm />} />
-            <Route path="/clientes/:id" element={<ClienteDetalhes />} />
+            <Route path="/clientes/:id" element={<ClienteDetalhes editar={""} />} />
             <Route path="/clientes/:id/editar" element={<ClienteForm />} />
 
             {/* Rotas de Pets */}
             <Route path="/pets" element={<PetList />} />
             <Route path="/pets/novo" element={<PetForm />} />
-            <Route path="/pets/:id" element={< DetalhesPet />} />
-            <Route path="/pets/:id/editar" element={<DetalhesPet />} />
+            <Route path="/pets/:id" element={< DetalhesPet id={""} />} />
+            <Route path="/pets/:id/editar" element={<DetalhesPet id={""} />} />
 
             {/* Rotas de Produtos */}
             <Route path="/produtos" element={<ProdutoList />} />
@@ -63,10 +61,7 @@ export default function AppRoutes() {
             <Route path="/vendas/:id" element={<DetalheVenda editar='false' />} />
             <Route path="/vendas/:id/editar" element={<DetalheVenda editar='true' />} />
 
-            {/* Rotas de Fornecedores */}
-            <Route path="/fornecedores" element={<FornecedoresList />} />
-            <Route path="/fornecedores/novo" element={<RegistroFornecedor />} />
-            <Route path="/fornecedores/:id" element={<FornecedorDetalhes />} />
+            <Route path="/estatisticas" element={<Statistics />} />
         </Routes >
     );
 }
